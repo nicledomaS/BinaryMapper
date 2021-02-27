@@ -11,8 +11,7 @@ class ApplicationObject : public BinaryObjectImpl
 {
 public:
     ApplicationObject(std::unique_ptr<BinaryData> binaryData);
-    ~ApplicationObject
-();
+    ~ApplicationObject();
 
     void execute(const CallData& callData) override;
 

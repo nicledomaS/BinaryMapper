@@ -1,7 +1,7 @@
 [![License][license-image]][license-url]
 
-# CppProjectTemplate
-C++ project template
+# BinaryMapper
+
 
 ## Build project
 `cmake -B build -DFIND_MODULES=ON -DFIND_TESTS=ON -DENABLE_TIDY=ON`

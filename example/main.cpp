@@ -11,9 +11,7 @@
 #include "BinaryObject.h"
 #include "LibraryObject.h"
 #include "ApplicationObject.h"
-
-struct CallData
-{};
+#include "CallData.h"
 
 std::unique_ptr<BinaryData> LoadBinaryData(const std::string& path, const std::string& name, BinaryType type)
 {
@@ -34,7 +32,7 @@ std::unique_ptr<BinaryData> LoadBinaryData(const std::string& path, const std::s
   return binaryData;
 }
 
-int main()
+int main(int argc, const char* argv[])
 {
   std::cout << "Start" << std::endl;
 
@@ -63,12 +61,16 @@ int main()
     BinaryType::Executable);
   auto execWrapper = mapper.create(std::move(execBinData));
 
+  CallData data;
+  data.setValue<std::string>("args", "test");
+
   while(true)
   {
     using namespace std::chrono_literals;
     std::this_thread::sleep_for(1s);
-    libWrapper->execute(CallData());
-    execWrapper->execute(CallData());
+
+    libWrapper->execute(data);
+    execWrapper->execute(data);
   }
 
   return 0;

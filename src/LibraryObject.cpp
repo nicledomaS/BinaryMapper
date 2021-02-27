@@ -35,6 +35,8 @@ Execute findExecFunc(void* libraryPtr)
         throw std::logic_error("Function did not find");
     }
 
+    std::cout << "Find function" << std::endl;
+
     return reinterpret_cast<Execute>(funcPtr);
 }
 
@@ -45,10 +47,6 @@ LibraryObject::LibraryObject(std::unique_ptr<BinaryData> binaryData)
     m_libraryPtr(dlOpen(m_fd)),
     m_execFunc(findExecFunc(m_libraryPtr))
 {
-    if(m_execFunc)
-    {
-      std::cout << "Find function" << std::endl;
-    }
 }
 
 LibraryObject::~LibraryObject()

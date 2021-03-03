@@ -2,6 +2,7 @@
 
 int main(int argc, const char** argv)
 {
-    std::cout << "Hello world!" << std::endl;
+    std::cout << "test_exec" << std::endl;
+    std::cout << argv[1] << std::endl;
     return 0;
 }

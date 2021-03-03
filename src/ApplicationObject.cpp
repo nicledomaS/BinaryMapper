@@ -1,5 +1,6 @@
 #include "ApplicationObject.h"
 #include "BinaryData.h"
+#include "CallData.h"
 #include "Utils.h"
 
 #include <stdlib.h>
@@ -18,5 +19,8 @@ ApplicationObject::~ApplicationObject()
 
 void ApplicationObject::execute(const CallData& callData)
 {
-    system(m_path.c_str());
+    auto callStr = callData.size() == 0 ?
+        m_path : m_path + " " +  callData.getValue<std::string>("args");
+
+    system(callStr.c_str());
 }

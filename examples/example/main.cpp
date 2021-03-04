@@ -12,6 +12,7 @@
 #include "LibraryObject.h"
 #include "ApplicationObject.h"
 #include "CallData.h"
+#include "ExecType.h"
 
 std::unique_ptr<BinaryData> LoadBinaryData(const std::string& path, const std::string& name, BinaryType type)
 {
@@ -50,27 +51,55 @@ int main(int argc, const char* argv[])
   });
 
   auto libBinData = LoadBinaryData(
-    "build/modules/test_export/libtest_export.so",
+    "build/examples/test_export/libtest_export.so",
     "libtest_export.so",
     BinaryType::Library);
   auto libWrapper = mapper.create(std::move(libBinData));
 
   auto execBinData = LoadBinaryData(
-    "build/modules/test_exec/test_exec",
+    "build/examples/test_exec/test_exec",
     "test_exec",
     BinaryType::Executable);
   auto execWrapper = mapper.create(std::move(execBinData));
 
-  CallData data;
-  data.setValue<std::string>("args", "test");
+  auto shExecBinData = LoadBinaryData(
+    "build/examples/sh_example/sh_example.sh",
+    "sh_example.sh",
+    BinaryType::Executable);
+  auto shExecWrapper = mapper.create(std::move(shExecBinData));
+
+  auto pyExecBinData = LoadBinaryData(
+    "build/examples/py_example/py_example.py",
+    "py_example.py",
+    BinaryType::Executable);
+  auto pyExecWrapper = mapper.create(std::move(pyExecBinData));
+
+  CallData libCallData;
+  libCallData.setValue<std::string>("args", "test");
+
+  CallData shExecCallData;
+  shExecCallData.setValue<ExecType>("type", ExecType::LocalExec);
+  shExecCallData.setValue<std::string>("command", "sh");
+  shExecCallData.setValue<std::string>("args", "test");
+
+  CallData puExecCallData;
+  puExecCallData.setValue<ExecType>("type", ExecType::LocalExec);
+  puExecCallData.setValue<std::string>("command", "python3");
+  puExecCallData.setValue<std::string>("args", "test");
+
+  CallData loadExecCallData;
+  loadExecCallData.setValue<ExecType>("type", ExecType::LoadExec);
+  loadExecCallData.setValue<std::string>("args", "test");
 
   while(true)
   {
     using namespace std::chrono_literals;
     std::this_thread::sleep_for(1s);
 
-    libWrapper->execute(data);
-    execWrapper->execute(data);
+    libWrapper->execute(libCallData);
+    execWrapper->execute(loadExecCallData);
+    shExecWrapper->execute(shExecCallData);
+    pyExecWrapper->execute(puExecCallData);
   }
 
   return 0;

@@ -7,8 +7,7 @@ enum class BinaryType
 {
     Unknown,
     Executable,
-    Library,
-    Module
+    Library
 };
 
 struct BinaryData

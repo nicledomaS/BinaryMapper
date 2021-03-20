@@ -1,2 +1,0 @@
-obj-m := @PROJECT_NAME@.o
-@PROJECT_NAME@-objs := $(pathsubst %.c,%.o, $(filter %.c, @MODULE_SOURCES_STRING@))

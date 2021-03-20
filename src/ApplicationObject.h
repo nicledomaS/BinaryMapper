@@ -2,15 +2,10 @@
 
 #include "BinaryObjectImpl.h"
 
-#include <functional>
 #include <string>
 #include <memory>
-#include <map>
 
 struct BinaryData;
-enum class ExecType;
-
-using Strategy = std::function<std::string(const std::string&, const CallData& callData)>;
 
 class ApplicationObject : public BinaryObjectImpl
 {
@@ -23,5 +18,4 @@ public:
 private:
     int m_fd;
     std::string m_path;
-    std::map<ExecType, Strategy> m_strategies;
 };

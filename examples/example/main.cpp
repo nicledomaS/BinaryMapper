@@ -11,6 +11,7 @@
 #include "BinaryObject.h"
 #include "LibraryObject.h"
 #include "ApplicationObject.h"
+#include "ModuleObject.h"
 #include "CallData.h"
 #include "ExecType.h"
 
@@ -49,6 +50,10 @@ int main(int argc, const char* argv[])
   {
     return std::make_shared<BinaryObject>(std::make_unique<ApplicationObject>(std::move(binaryData)));
   });
+  mapper.addFactory(BinaryType::Module, [](std::unique_ptr<BinaryData> binaryData)
+  {
+    return std::make_shared<BinaryObject>(std::make_unique<ModuleObject>(std::move(binaryData)));
+  });
 
   auto libBinData = LoadBinaryData(
     "build/examples/test_export/libtest_export.so",
@@ -74,6 +79,12 @@ int main(int argc, const char* argv[])
     BinaryType::Executable);
   auto pyExecWrapper = mapper.create(std::move(pyExecBinData));
 
+  // auto moduleBinData = LoadBinaryData(
+  //   "build/examples/driver_example/driver_example.ko",
+  //   "driver_example.ko",
+  //   BinaryType::Module);
+  // auto moduleWrapper = mapper.create(std::move(moduleBinData));
+
   CallData libCallData;
   libCallData.setValue<std::string>("args", "test");
 
@@ -90,6 +101,7 @@ int main(int argc, const char* argv[])
   CallData loadExecCallData;
   loadExecCallData.setValue<ExecType>("type", ExecType::LoadExec);
   loadExecCallData.setValue<std::string>("args", "test");
+  
 
   while(true)
   {
@@ -100,6 +112,7 @@ int main(int argc, const char* argv[])
     execWrapper->execute(loadExecCallData);
     shExecWrapper->execute(shExecCallData);
     pyExecWrapper->execute(puExecCallData);
+    // moduleWrapper->execute(libCallData);
   }
 
   return 0;

@@ -12,5 +12,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall")
 include_directories(${CMAKE_SOURCE_DIR}/modules/common/include)
 
 static_library(${PROJECT_NAME} SOURCES "src/")
+clang_tidy_analysis(${PROJECT_NAME})
 
 add_subdirectory(examples)

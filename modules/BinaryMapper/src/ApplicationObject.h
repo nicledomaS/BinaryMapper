@@ -7,15 +7,26 @@
 #include <memory>
 #include <map>
 
+namespace binary_data
+{
+
 struct BinaryData;
+
+} // binary_data
+
+namespace call_data
+{
+
 enum class ExecType;
+
+} // call_data
 
 using Strategy = std::function<std::string(const std::string&, const CallData& callData)>;
 
 class ApplicationObject : public BinaryObjectImpl
 {
 public:
-    ApplicationObject(std::unique_ptr<BinaryData> binaryData);
+    ApplicationObject(std::unique_ptr<binary_data::BinaryData> binaryData);
     ~ApplicationObject();
 
     void execute(const CallData& callData) override;
@@ -23,5 +34,5 @@ public:
 private:
     int m_fd;
     std::string m_path;
-    std::map<ExecType, Strategy> m_strategies;
+    std::map<call_data::ExecType, Strategy> m_strategies;
 };

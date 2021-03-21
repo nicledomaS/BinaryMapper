@@ -42,7 +42,7 @@ Execute findExecFunc(void* libraryPtr)
 
 } // anonymous
 
-LibraryObject::LibraryObject(std::unique_ptr<BinaryData> binaryData)
+LibraryObject::LibraryObject(std::unique_ptr<binary_data::BinaryData> binaryData)
     : m_fd(prepareMemFd(*binaryData)),
     m_libraryPtr(dlOpen(m_fd)),
     m_execFunc(findExecFunc(m_libraryPtr))

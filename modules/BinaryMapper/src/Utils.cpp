@@ -4,7 +4,7 @@
 #include <sys/mman.h>
 #include <unistd.h>
 
-int prepareMemFd(const BinaryData& binaryData)
+int prepareMemFd(const binary_data::BinaryData& binaryData)
 {
     auto fd = memfd_create(binaryData.name.c_str(), MFD_ALLOW_SEALING);
     ::write(fd, binaryData.data.data(), binaryData.data.size());

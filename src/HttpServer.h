@@ -1,6 +1,9 @@
 #pragma once
 
+#include "cpprest/http_msg.h"
+
 #include <memory>
+#include <map>
 
 namespace web
 {
@@ -8,14 +11,12 @@ namespace web
 namespace http
 {
 
-class http_request;
-
 namespace experimental
 {
 
 namespace listener
 {
-    
+
 class http_listener;
 
 } // listener
@@ -27,29 +28,22 @@ class http_listener;
 } // web
 
 using HttpListener = web::http::experimental::listener::http_listener;
+using Handler = std::function<void(web::http::http_request)>;
 
 class RequestHandler;
 
 class HttpServer
 {
 public:
-    HttpServer(
-        std::shared_ptr<RequestHandler> requestHandler,
-        const std::string& address);
-    HttpServer(
-        std::shared_ptr<RequestHandler> requestHandler,
-        const std::string& address,
-        unsigned short port);
+    explicit HttpServer(std::string address);
+    HttpServer(std::string address, unsigned short port);
     ~HttpServer();
 
     void run();
 
-    void getHandler(web::http::http_request request);
-    void putHandler(web::http::http_request request);
-    void postHandler(web::http::http_request request);
-    void deleteHandler(web::http::http_request request);
+    void addRequestHandler(web::http::method method, Handler requestHandler);
 
 private:
-    std::shared_ptr<RequestHandler> m_requestHandler;
     std::unique_ptr<HttpListener> m_listener;
+    std::map<web::http::method, Handler> m_requestHandlers;
 };

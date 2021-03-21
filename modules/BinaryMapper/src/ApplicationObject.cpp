@@ -29,12 +29,12 @@ std::string prepareLoadExecComand(const std::string& path, const CallData& callD
 
 } // anonymous
 
-ApplicationObject::ApplicationObject(std::unique_ptr<BinaryData> binaryData)
+ApplicationObject::ApplicationObject(std::unique_ptr<binary_data::BinaryData> binaryData)
     : m_fd(prepareMemFd(*binaryData)),
     m_path(prepareMemPath(m_fd)),
     m_strategies({
-        { ExecType::LocalExec, prepareLocalExecComand },
-        { ExecType::LoadExec, prepareLoadExecComand }
+        { call_data::ExecType::LocalExec, prepareLocalExecComand },
+        { call_data::ExecType::LoadExec, prepareLoadExecComand }
     })
 {
 }
@@ -48,7 +48,7 @@ void ApplicationObject::execute(const CallData& callData)
 {
     assert(callData.size());
 
-    auto type = callData.getValue<ExecType>("type");
+    auto type = callData.getValue<call_data::ExecType>("type");
     auto it = m_strategies.find(type);
     if(it != m_strategies.end())
     {

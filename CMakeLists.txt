@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.7)
 
-project(BinaryMapper)
+project(RemoteBinaryMapper)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -11,7 +11,13 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall")
 
 include_directories(${CMAKE_SOURCE_DIR}/modules/common/include)
 
-static_library(${PROJECT_NAME} SOURCES "src/")
-clang_tidy_analysis(${PROJECT_NAME})
+find_package(cpprestsdk REQUIRED)
+
+executable(${PROJECT_NAME}
+            SOURCES "./src"
+            THREADS
+            MODULES BinaryMapper)
+
+target_link_libraries(${PROJECT_NAME} cpprestsdk::cpprest dl)
 
 add_subdirectory(examples)

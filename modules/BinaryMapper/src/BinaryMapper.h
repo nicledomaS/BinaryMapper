@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <vector>
 #include <string>
 #include <memory>
 #include <functional>
@@ -21,7 +22,11 @@ public:
     
     void addFactory(BinaryType type, BinaryObjectFactory factory);
 
+    std::vector<std::string> getNames() const;
+
 private:
     std::map<BinaryType, BinaryObjectFactory> m_factories;
     std::map<std::string, std::shared_ptr<BinaryObject>> m_wrappers;
 };
+
+std::unique_ptr<BinaryMapper> createMapper();

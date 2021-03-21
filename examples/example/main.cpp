@@ -9,9 +9,6 @@
 #include "BinaryMapper.h"
 #include "BinaryData.h"
 #include "BinaryObject.h"
-#include "LibraryObject.h"
-#include "ApplicationObject.h"
-#include "ModuleObject.h"
 #include "CallData.h"
 #include "ExecType.h"
 
@@ -40,50 +37,37 @@ int main(int argc, const char* argv[])
 
   std::cout << getpid() << std::endl;
 
-  BinaryMapper mapper;
-  mapper.addFactory(BinaryType::Library, [](std::unique_ptr<BinaryData> binaryData)
-  {
-    return std::make_shared<BinaryObject>(std::make_unique<LibraryObject
-  >(std::move(binaryData)));
-  });
-  mapper.addFactory(BinaryType::Executable, [](std::unique_ptr<BinaryData> binaryData)
-  {
-    return std::make_shared<BinaryObject>(std::make_unique<ApplicationObject>(std::move(binaryData)));
-  });
-  mapper.addFactory(BinaryType::Module, [](std::unique_ptr<BinaryData> binaryData)
-  {
-    return std::make_shared<BinaryObject>(std::make_unique<ModuleObject>(std::move(binaryData)));
-  });
+  auto mapper = createMapper();
 
   auto libBinData = LoadBinaryData(
     "build/examples/test_export/libtest_export.so",
     "libtest_export.so",
     BinaryType::Library);
-  auto libWrapper = mapper.create(std::move(libBinData));
+  auto libWrapper = mapper->create(std::move(libBinData));
 
   auto execBinData = LoadBinaryData(
     "build/examples/test_exec/test_exec",
     "test_exec",
     BinaryType::Executable);
-  auto execWrapper = mapper.create(std::move(execBinData));
+  auto execWrapper = mapper->create(std::move(execBinData));
 
   auto shExecBinData = LoadBinaryData(
     "build/examples/sh_example/sh_example.sh",
     "sh_example.sh",
     BinaryType::Executable);
-  auto shExecWrapper = mapper.create(std::move(shExecBinData));
+  auto shExecWrapper = mapper->create(std::move(shExecBinData));
 
   auto pyExecBinData = LoadBinaryData(
     "build/examples/py_example/py_example.py",
     "py_example.py",
     BinaryType::Executable);
-  auto pyExecWrapper = mapper.create(std::move(pyExecBinData));
+  auto pyExecWrapper = mapper->create(std::move(pyExecBinData));
 
   // auto moduleBinData = LoadBinaryData(
   //   "build/examples/driver_example/driver_example.ko",
   //   "driver_example.ko",
   //   BinaryType::Module);
-  // auto moduleWrapper = mapper.create(std::move(moduleBinData));
+  // auto moduleWrapper = mapper->create(std::move(moduleBinData));
 
   CallData libCallData;
   libCallData.setValue<std::string>("args", "test");

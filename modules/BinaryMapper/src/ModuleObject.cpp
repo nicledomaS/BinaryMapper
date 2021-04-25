@@ -15,7 +15,7 @@ constexpr auto RmModApp = "rmmod";
 
 } // anonymous
 
-ModuleObject::ModuleObject(std::unique_ptr<BinaryData> binaryData)
+ModuleObject::ModuleObject(std::unique_ptr<binary_data::BinaryData> binaryData)
     : m_fd(prepareMemFd(*binaryData)),
     m_path(prepareMemPath(m_fd))
 {

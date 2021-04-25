@@ -2,7 +2,12 @@
 
 #include <string>
 
+namespace binary_data
+{
+
 struct BinaryData;
 
-int prepareMemFd(const BinaryData& binaryData);
+} // binary_data
+
+int prepareMemFd(const binary_data::BinaryData& binaryData);
 std::string prepareMemPath(int fd);

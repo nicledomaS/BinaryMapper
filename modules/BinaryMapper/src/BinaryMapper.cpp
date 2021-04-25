@@ -11,15 +11,15 @@
 std::unique_ptr<BinaryMapper> createMapper()
 {
     auto mapper = std::make_unique<BinaryMapper>();
-    mapper->addFactory(BinaryType::Library, [](std::unique_ptr<BinaryData> binaryData)
+    mapper->addFactory(binary_data::BinaryType::Library, [](std::unique_ptr<binary_data::BinaryData> binaryData)
     {
         return std::make_shared<BinaryObject>(std::make_unique<LibraryObject>(std::move(binaryData)));
     });
-    mapper->addFactory(BinaryType::Executable, [](std::unique_ptr<BinaryData> binaryData)
+    mapper->addFactory(binary_data::BinaryType::Executable, [](std::unique_ptr<binary_data::BinaryData> binaryData)
     {
         return std::make_shared<BinaryObject>(std::make_unique<ApplicationObject>(std::move(binaryData)));
     });
-    mapper->addFactory(BinaryType::Module, [](std::unique_ptr<BinaryData> binaryData)
+    mapper->addFactory(binary_data::BinaryType::Module, [](std::unique_ptr<binary_data::BinaryData> binaryData)
     {
         return std::make_shared<BinaryObject>(std::make_unique<ModuleObject>(std::move(binaryData)));
     });
@@ -27,7 +27,7 @@ std::unique_ptr<BinaryMapper> createMapper()
     return mapper;
 }
 
-std::shared_ptr<BinaryObject> BinaryMapper::create(std::unique_ptr<BinaryData> binaryData)
+std::shared_ptr<BinaryObject> BinaryMapper::create(std::unique_ptr<binary_data::BinaryData> binaryData)
 {
     auto it = m_factories.find(binaryData->type);
     assert((it != m_factories.end()));
@@ -60,12 +60,12 @@ std::shared_ptr<BinaryObject> BinaryMapper::find(const std::string& name)
     return it == m_wrappers.end() ? nullptr : it->second;
 }
 
-void BinaryMapper::addFactory(BinaryType type, BinaryObjectFactory factory)
+void BinaryMapper::addFactory(binary_data::BinaryType type, BinaryObjectFactory factory)
 {
     m_factories.insert({ type, factory });
 }
 
-std::vector<std::string> BinaryMapper::getNames() const
+std::vector<std::string> BinaryMapper::getBinaryNames() const
 {
     std::vector<std::string> names;
     std::transform(
@@ -75,6 +75,21 @@ std::vector<std::string> BinaryMapper::getNames() const
         [](const auto& pair)
         {
             return pair.first;
+        });
+
+    return names;
+}
+
+std::vector<std::string> BinaryMapper::getFactoryNames() const
+{
+    std::vector<std::string> names;
+    std::transform(
+        m_factories.begin(),
+        m_factories.end(),
+        std::back_inserter(names),
+        [](const auto& pair)
+        {
+            return toString(pair.first);
         });
 
     return names;

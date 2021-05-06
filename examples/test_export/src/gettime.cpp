@@ -3,13 +3,23 @@
 
 #include "CallData.h"
 
+void printCallData(const std::string& strValue, int intValue)
+{
+      std::cout << strValue << std::to_string(intValue) << std::endl;
+}
+
 void printCallData(void* data)
 {
-  auto callData = (CallData*)data;
+  auto callData = static_cast<CallData*>(data);
   if(callData->size())
   {
-      std::cout << "test_export" << std::endl;
-      std::cout << callData->getValue<std::string>("args") << std::endl;
+    std::cout << "test_export" << std::endl;
+
+    auto command = callData->getValue<std::string>("command");
+    if(command == "printCallData")
+    {
+      printCallData(callData->getValue<std::string>("str_value"), callData->getValue<int>("int_value"));
+    }
   }
 }
 

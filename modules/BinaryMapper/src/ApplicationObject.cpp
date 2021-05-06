@@ -13,18 +13,22 @@
 namespace
 {
 
+constexpr auto TypeKey = "type";
+constexpr auto CommandKey = "command";
+constexpr auto ArgsKey = "args";
+
 std::string prepareLocalExecComand(const std::string& path, const CallData& callData)
 {
     assert(callData.size());
 
-    auto command = callData.getValue<std::string>("command");
-    auto args = callData.getValue<std::string>("args");
+    auto command = callData.getValue<std::string>(CommandKey);
+    auto args = callData.getValue<std::string>(ArgsKey);
     return command + " " + path + " " + args;
 }
 
 std::string prepareLoadExecComand(const std::string& path, const CallData& callData)
 {
-    return callData.size() == 0 ? path : path + " " +  callData.getValue<std::string>("args");
+    return callData.size() == 0 ? path : path + " " +  callData.getValue<std::string>(ArgsKey);
 }
 
 } // anonymous
@@ -48,7 +52,7 @@ void ApplicationObject::execute(const CallData& callData)
 {
     assert(callData.size());
 
-    auto type = callData.getValue<call_data::ExecType>("type");
+    auto type = call_data::fromString(callData.getValue<std::string>(TypeKey));
     auto it = m_strategies.find(type);
     if(it != m_strategies.end())
     {

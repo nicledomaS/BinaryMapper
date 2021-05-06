@@ -21,8 +21,6 @@ void* dlOpen(int fd)
         throw std::logic_error("Lib did not open");
     }
 
-    std::cout << "Load library" << std::endl;
-
     return lib;
 }
 
@@ -34,8 +32,6 @@ Execute findExecFunc(void* libraryPtr)
     {
         throw std::logic_error("Function did not find");
     }
-
-    std::cout << "Find function" << std::endl;
 
     return reinterpret_cast<Execute>(funcPtr);
 }

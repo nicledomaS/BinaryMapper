@@ -10,14 +10,14 @@
 #include "cpprest/json.h"
 
 #include <iostream>
+#include <functional>
+#include <map>
 
 namespace
 {
 
 constexpr auto NameKey = "name";
 constexpr auto TypeKey = "type";
-constexpr auto CommandKey = "command";
-constexpr auto ArgsKey = "args";
 constexpr auto BinaryDataKey = "binary_data";
 
 constexpr auto NamesKey = "Names";
@@ -73,16 +73,58 @@ std::unique_ptr<binary_data::BinaryData> toBinaryData(const web::json::value& va
     return nullptr;
 }
 
+void setString(CallData& callData, const std::string& name, const web::json::value& value)
+{
+    callData.setValue(name, value.as_string());
+}
+
+void setBool(CallData& callData, const std::string& name, const web::json::value& value)
+{
+    callData.setValue(name, value.as_bool());
+}
+
+void setNumber(CallData& callData, const std::string& name, const web::json::value& value)
+{
+    if(value.is_integer())
+    {
+        callData.setValue(name, value.as_integer());
+    }
+    else if(value.is_double())
+    {
+        callData.setValue(name, value.as_double());
+    }
+    else
+    {
+        std::cout << "Number do not support" << std::endl;
+    }
+}
+
+using ValueHandler = std::function<void(CallData&, const std::string&, const web::json::value&)>;
+static std::map<web::json::value::value_type, ValueHandler> valueHandlers = {
+    { web::json::value::value_type::String, &setString },
+    { web::json::value::value_type::Boolean, &setBool },
+    { web::json::value::value_type::Number, &setNumber }
+};       
+
 std::unique_ptr<CallData> toCallData(const web::json::value& value)
 {
     if(value.is_object())
     {
         auto obj = value.as_object();
         auto callData = std::make_unique<CallData>();
-        callData->setValue<std::string>(NameKey, obj[NameKey].as_string());
-        callData->setValue<call_data::ExecType>(TypeKey, call_data::fromString(obj[TypeKey].as_string()));
-        callData->setValue<std::string>(CommandKey, obj[CommandKey].as_string());
-        callData->setValue<std::string>(ArgsKey, obj[ArgsKey].as_string());
+
+        for(const auto& item : obj)
+        {
+            auto it = valueHandlers.find(item.second.type());
+            if(it != valueHandlers.end())
+            {
+                it->second(*callData, item.first, item.second);
+            }
+            else
+            {
+                std::cout << "Type do not support" << std::endl;
+            }
+        }
 
         return callData;
     }
